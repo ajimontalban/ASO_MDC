@@ -6,7 +6,7 @@ TEST2=$(echo -e "5\n" | ./02_elif.sh)
 TEST3=$(echo -e "6\n" | ./02_elif.sh)
 TEST4=$(echo -e "8\n" | ./02_elif.sh)
 TEST5=$(echo -e "9\n" | ./02_elif.sh)
-TEST6=$(echo -e " 2\n" | ./02_elif.sh)
+TEST6=$(echo -e "12\n" | ./02_elif.sh)
 
 # Mensajes que debe de aparecer en función del número introducido, nos aseguramos que 
 # los test y los mensajes van acordes.
