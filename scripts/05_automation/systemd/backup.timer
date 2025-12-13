@@ -1,0 +1,11 @@
+[Unit]
+Descrition=Timer para ejecutar backup.service los viernes a las 15:00
+
+[Timer]
+OnCalendar=Fri 15:00
+Persistent=true
+Unit=backup.service
+
+[Install]
+WantedBy=timers.target
+ 

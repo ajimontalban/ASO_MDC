@@ -1,0 +1,9 @@
+[Unit]
+Description=Ejecucion script backup para copiar archivos de una máquina en otra remota
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/backup.conf
+ExecStart=/usr/local/bin/backup.sh
+User=ignacio
+Group=ignacio
