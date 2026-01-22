@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Pasamos el archivo con las variables de entorno $TOKEN y $ID
+source /usr/local/bin/.env
+
 # almacena los discos que estan en el sistema en un fichero 
 df -x tmpfs -x devtmpfs --output=source,target | tail -n +2 | sed 's/ \//,\//' > fichero.txt
 
@@ -9,16 +12,25 @@ df -x tmpfs -x devtmpfs --output=source,target | tail -n +2 | sed 's/ \//,\//' >
 # administrador del sistema medinte el comando mail.
 while IFS=',' read nombre montaje; do
     porcentaje=$(df --output=pcent $montaje | tail -n +2 | sed 's/^  //' | cut -d'%' -f1)
-    if [[ "$porcentaje" -gt 7 ]]; then
+    if [[ "$porcentaje" -gt 90 ]]; then
         echo "El disco $nombre se encuentra por encima del 90% de su almacenamiento." >> mensaje.txt
     fi
 done < fichero.txt
 
 # Comprueba que el fichero mensaje.txt existe y que su tamaño es mayor a 0 bytes
 if [[ (-f mensaje.txt) && (-s mensaje.txt) ]];then
-    # llama al archivo y lo redirecciona al cuerpo del mensaje de comando mail, el 
-    # cual es enviado al usuario root. La informacion se almacena en /var/mail/root
-    cat mensaje.txt | mail -s "Almacenamiento del sistema" root@localhost
+    # El contenido del archivo mensaje.txt es guardado en una variable para
+    # notificar mediante telegram al administrador.
+    MENSAJE=$(cat mensaje.txt) 
+    # Usamos la URL de la api de telegram indicando el bot a usar y que debemos
+    # mandarle un mensaje
+    URL="https://api.telegram.org/bot$TOKEN/sendMessage"
+    # Usamos curl para indicar que mensaje enviar y hacia donde
+    # Redirigimos la salida standar para que no aparezca la informacion por 
+    # la terminal pero permitimos que los errores si aparezcan 
+    # Las flags son -s `silent` -X `metodo` y -d `datos`
+    curl -s -X POST $URL -d chat_id="$ID" -d text="$MENSAJE" > /dev/null 
+
     rm mensaje.txt
 fi
 

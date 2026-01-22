@@ -1,0 +1,12 @@
+
+[Unit]
+Description=Ejecuta un script que comprueba el almacenamiento de los discos
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ejercicio1.sh
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
