@@ -1,0 +1,11 @@
+[Unit]
+Description=Timer para ejecutar ejercicio2.service
+
+[Timer]
+; Cada siete dias a las 00:00, todos los meses 
+OnCalendar=*-*/7 00:00
+Unit=ejercicio2.service
+
+[Install]
+WantedBy=timers.target
+ 

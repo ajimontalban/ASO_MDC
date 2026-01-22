@@ -1,0 +1,14 @@
+
+[Unit]
+Description=Elimina el contenido de la carpeta `/tmp` 
+
+[Service]
+Type=oneshot
+; ExecStart=/bin/bash -c 'rm -rf /tmp/*'
+ExecStart=/usr/local/bin/ejercicio2.sh
+Persistant=true
+User=root
+Group=root
+
+[Install]
+WantedBy=multi-user.target
