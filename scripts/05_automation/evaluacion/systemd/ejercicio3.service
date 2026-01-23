@@ -1,0 +1,14 @@
+
+[Unit]
+Description=Ejecuta un script que almacena los logs en una maquina remota y genera rotación
+After=ejercicio1.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/ejercicio3.conf
+ExecStart=/usr/local/bin/ejercicio3.sh
+User=1000
+Group=1000
+
+[Install]
+WantedBy=multi-user.target

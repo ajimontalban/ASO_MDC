@@ -26,7 +26,7 @@ fi
 
 # Recorre el array y crea un archivo .log por cada servicio seleccionado
 for elem in "${RUTAS[@]}";do
-    journalctl -u "${elem}".service -S "-24h" > /tmp/backup/"${elem}"-$(date +%Y%m%d-%H%M).log
+    journalctl -u "${elem}".service -S "-12h" > /tmp/backup/"${elem}"-$(date +%Y%m%d-%H%M).log
 done
 
 # Comprueba que la carpeta no esté vacia, si lo está borra directamente la carpeta
@@ -37,7 +37,29 @@ else
     # Creamos una variable ruta para usarla varias veces y hacemos agrupacion y 
     # compresion de todos los archivos dentro de la carpeta /tmp/backup
     ruta="/tmp/backup_$(date +'%Y%m%d%H%M')"
-    tar -czf "${ruta}".tar.gz /tmp/backup/* # 2$> /dev/null
+    tar -czf "${ruta}".tar.gz /tmp/backup/* 2&> /dev/null
+
+    scp -i ~/.ssh/backup_proxmox "${ruta}".tar.gz asir@10.255.212.8:backup_logs/
+
+    if [[ $? -ne 0 ]];then
+        echo "No se ha podido completar el copiado de los logs \"${ruta}\".tar.gz"
+        exit 2
+    else
+        rm -r /tmp/backup
+    fi
+
+    # Es un contador
+    lista_archivos=$(ssh -q -i ~/.ssh/backup_proxmox asir@10.255.212.8 ls -1 backup  | wc -l)
+    # Comprueba si existen mas de 30 archivos en remoto
+    while [[ $lista_archivos -gt 30 ]];do
+        # Guarda el nombre del archivo en una variable y elimina el archivo con ese nombre
+        archivo_viejo=$(ssh -q -i ~/.ssh/backup_proxmox asir@10.255.212.8 ls -1 backup  | head -1)
+        echo "Eliminando $archivo_viejo"
+        ssh -q -i ~/.ssh/backup_proxmox asir@10.255.212.8 rm backup/"$archivo_viejo"
+
+        # Reduce el contador lista_archivos por cada archivo eliminado
+        lista_archivos=$((lista_archivos - 1))
+    done
 fi
 
 

@@ -1,0 +1,13 @@
+
+[Unit]
+Description=Ejecuta un script que guarda los archivos que han sido modificados previamente en una carpeta concreta
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/ejercicio4.sh
+EnvironmentFile=/etc/ejercicio4.conf
+User=1000
+Group=1000
+
+[Install]
+WantedBy=multi-user.target

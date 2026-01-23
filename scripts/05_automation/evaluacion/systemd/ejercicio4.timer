@@ -1,0 +1,11 @@
+[Unit]
+Description=Timer para ejecutar ejercicio4.service
+
+[Timer]
+OnCalendar=*:* 
+Unit=ejercicio4.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+ 
